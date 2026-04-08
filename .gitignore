@@ -1,0 +1,29 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+docs/index.md
+docs/license.md
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Ruff
+.ruff_cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# JupyterLite
+.jupyterlite.doit.db
+
+# MkDocs
+.ipynb_checkpoints/
+site/
+
+# Tox
+.tox/

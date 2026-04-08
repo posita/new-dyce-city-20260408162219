@@ -1,0 +1,147 @@
+[project]
+name = "dyce"
+dynamic = ["version"]
+description = "optype test"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "optype",
+    "typing_extensions>=4.5; python_version < '3.13'",  # back-port of deprecated decorator
+]
+
+[project.optional-dependencies]
+viz = ["matplotlib"]
+
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["dyce"]
+package-data = {"dyce" = ["py.typed"]}
+
+[tool.setuptools_scm]
+fallback_version = "0.0.0+unknown"
+
+[dependency-groups]
+dev = [
+    "blacken-docs>=1.20.0",
+    "ipython",
+    "mypy",
+    "pre-commit",
+    "pre-commit-uv",
+    "pyrefly",
+    "pyright",
+    "ruff",
+    "ty",
+    {include-group = "viz"},
+    {include-group = "docs"},
+    {include-group = "test"},
+]
+docs = [
+    "click!=8.2.1,!=8.2.2,!=8.3.0,!=8.3.1",  # TODO(posita): Remove after 8.3.2 is released; see <https://github.com/mkdocs/mkdocs/issues/4032>
+    "griffe-warnings-deprecated",
+    "jupyterlab-widgets",
+    "jupyterlite",
+    "jupyterlite-pyodide-kernel",
+    "jupyter_server",
+    "markdown-pycon",
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "numpy",
+    "pandas",
+    "pymdown-extensions",
+    "sympy",
+]
+test = [
+    "beartype",
+    "coverage[toml]",
+    "numpy",
+    "pytest",
+    "pytest-beartype",
+    "pytest-cov",
+    "pytest-gitignore",
+    "sympy",
+    "tox",
+    "tox-uv",
+    {include-group = "viz"},
+]
+viz = ["matplotlib"]
+
+[tool.codespell]
+ignore-words-list = "CanGe,countin,rollin"
+skip = ["*.ipynb"]
+
+[tool.coverage.run]
+source = ["dyce"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.mypy]
+# TODO(posita): add "docs" once there are .py files there
+files = ["dyce", "helpers", "tests", "*.py"]
+python_version = "3.11"
+exclude_gitignore = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unreachable = true
+
+[tool.pyrefly]
+project-includes = ["docs", "dyce", "helpers", "tests", "*.py"]
+python-version = "3.11.0"
+infer-with-first-use = false
+
+[warnings]
+unused-ignore = true
+
+[tool.pyright]
+include = ["docs", "dyce", "helpers", "tests", "*.py"]
+pythonVersion = "3.11"
+reportUnnecessaryTypeIgnoreComment = "warning"
+typeCheckingMode = "basic"
+
+[tool.pytest.ini_options]
+addopts = ["--doctest-glob=*.md", "--doctest-modules"]
+testpaths = ["README.md", "docs", "dyce", "helpers", "tests", "*.py"]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint]
+preview = true
+ignore = [
+  "CPY",
+  "D",
+  "DOC",
+  "EM",
+  "FIX",  # TODO(posita): run occasionally, or figure out how to make these warnings
+  "PLC",
+  "PLR",
+  "COM812",  # Trailing comma missing
+  "E501",  # Line too long (... > ...)
+  "RET505",  # Unnecessary `else` after `return` statement
+  "RET506",  # Unnecessary `else` after `raise` statement
+  "RET507",  # Unnecessary `else` after `continue` statement
+  "RUF002",  # Docstring contains ambiguous ...
+  "RUF067",  # `__init__` module should only contain docstrings and re-exports
+  "S101",  # Use of `assert` detected
+  "S311",  # Standard pseudo-random generators are not suitable for cryptographic purposes
+  "TRY003",  # Avoid specifying long messages outside the exception class
+]
+select = [
+  "ALL",
+]
+
+[tool.ty.src]
+include = ["docs", "dyce", "helpers", "tests", "*.py"]
+
+[tool.check_doctests]
+# log_level = "DEBUG"
+
+[tool.check_doctests.check]
+checkers = [["ty", "check"], ["pyrefly", "check", "--search-path", "."], ["pyright"], ["mypy"]]
+fail_fast = false
